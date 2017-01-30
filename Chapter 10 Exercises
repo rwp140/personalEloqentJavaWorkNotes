@@ -1,0 +1,136 @@
+Chapter 10 Exercises
+
+Month names
+
+Write a simple module similar to the weekDay module that can convert month numbers (zero-based, as in the Date type) to names and can convert names back to numbers. Give it its own namespace since it will need an internal array of month names, and use plain JavaScript, without any module loader system.
+
+--
+
+// Your code here.
+(function(exports) {
+  var months = ["January", "Febuarary", "March", "Apiril",
+               "May", "June", "July","August","September",
+                "October", "November", "December"];
+
+  exports.name = function(number) {
+    return months[number];
+  };
+  exports.number = function(name) {
+    return months.indexOf(name);
+  };
+})(this.month = {});
+
+console.log(month.name(2));
+// → March
+console.log(month.number("November"));
+// → 10
+March
+10
+
+----
+
+
+A return to electronic life <review again later>
+
+Hoping that Chapter 7 is still somewhat fresh in your mind, think back to the system designed in that chapter and come up with a way to separate the code into modules. To refresh your memory, these are the functions and types defined in that chapter, in order of appearance:
+
+Vector
+Grid
+directions
+directionNames
+randomElement
+BouncingCritter
+elementFromChar
+World
+charFromElement
+Wall
+View
+WallFollower
+dirPlus
+LifelikeWorld
+Plant
+PlantEater
+SmartPlantEater
+Tiger
+
+Don’t exaggerate and create too many modules. A book that starts a new chapter for every page would probably get on your nerves, if only because of all the space wasted on titles. Similarly, having to open 10 files to read a tiny project isn’t helpful. Aim for three to five modules.
+
+You can choose to have some functions become internal to their module and thus inaccessible to other modules.
+
+There is no single correct solution here. Module organization is largely a matter of taste.
+--
+Moduel "Grid" 
+	Vector
+	directions
+	directionNames
+
+Module "World"
+	randomElement
+	elmentFromChar
+	charFromElement
+	view
+	Wall
+	LifeLikeWorld
+
+Moduel "Creature"
+	name
+	Move
+	Grow
+	Eat
+	doesEat
+	targets
+	energy
+--
+[hint]
+
+"Here is what I came up with. I’ve put parentheses around internal functions.
+
+Module "grid"
+  Vector
+  Grid
+  directions
+  directionNames
+
+Module "world"
+  (randomElement)
+  (elementFromChar)
+  (charFromElement)
+  View
+  World
+  LifelikeWorld
+  directions [reexported]
+
+Module "simple_ecosystem"
+  (randomElement) [duplicated]
+  (dirPlus)
+  Wall
+  BouncingCritter
+  WallFollower
+
+Module "ecosystem"
+  Wall [duplicated]
+  Plant
+  PlantEater
+  SmartPlantEater
+  Tiger"
+----
+
+Circular dependencies
+
+A tricky subject in dependency management is circular dependencies, where module A depends on B, and B also depends on A. Many module systems simply forbid this. CommonJS modules allow a limited form: it works as long as the modules do not replace their default exports object with another value and start accessing each other’s interface only after they finish loading.
+
+Can you think of a way in which support for this feature could be implemented? Look back to the definition of require and consider what the function would have to do to allow this.
+
+--
+A) Have a third module A and B both refer to, that can call and place values
+b) have a third maodule that gathers from A and B, and calls thier methods and values as requested
+C) combine both
+D) use a, and set up a "require" to have both module exports be required by each otehr in set up. eg: m1 = require("m1","m2") m2 = require("m2","m1") [...]
+
+
+
+
+
+
+
+
