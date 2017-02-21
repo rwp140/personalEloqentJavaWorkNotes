@@ -1,0 +1,54 @@
+The pie chart
+
+Earlier in the chapter, we saw an example program that drew a pie chart. Modify this program so that the name of each category is shown next to the slice that represents it. Try to find a pleasing-looking way to automatically position this text, which would work for other data sets as well. You may assume that categories are no smaller than 5 percent (that is, there won’t be a bunch of tiny ones next to each other).
+
+You might again need Math.sin and Math.cos, as described in the previous exercise.
+
+<canvas width="600" height="300"></canvas>
+<script>
+  var cx = document.querySelector("canvas").getContext("2d");
+  var total = results.reduce(function(sum, choice) {
+    return sum + choice.count;
+  }, 0);
+
+  var currentAngle = -0.5 * Math.PI;
+  var centerX = 300, centerY = 150;
+  // Add code to draw the slice labels in this loop.
+  results.forEach(function(result) {
+    var sliceAngle = (result.count / total) * 2 * Math.PI;
+    cx.beginPath();
+    cx.arc(centerX, centerY, 100,
+           currentAngle, currentAngle + sliceAngle);
+    var middleAngle = currentAngle + 0.5 * sliceAngle;
+    var textX = Math.cos(middleAngle) * 120 + centerX;
+    var textY = Math.sin(middleAngle) * 120 + centerY;
+    cx.font = "12px Georgia";
+    cx.fillStyle = "black"
+ 	cx.fillText(result.name, textX-20, textY);
+    currentAngle += sliceAngle;
+    cx.fillStyle = result.color;
+    cx.lineTo(centerX, centerY);
+    cx.fill();
+  });
+</script>
+
+[hint]
+ You will need to call fillText and set the context’s textAlign and textBaseline properties in such a way that the text ends up where you want it.
+
+A sensible way to position the labels would be to put the text on the line going from the center of the pie through the middle of the slice. You don’t want to put the text directly against the side of the pie but rather move the text out to the side of the pie by a given number of pixels.
+
+The angle of this line is currentAngle + 0.5 * sliceAngle. The following code finds a position on this line, 120 pixels from the center:
+
+
+var middleAngle = currentAngle + 0.5 * sliceAngle;
+var textX = Math.cos(middleAngle) * 120 + centerX;
+var textY = Math.sin(middleAngle) * 120 + centerY;
+1
+var middleAngle = currentAngle + 0.5 * sliceAngle;
+2
+var textX = Math.cos(middleAngle) * 120 + centerX;
+3
+var textY = Math.sin(middleAngle) * 120 + centerY;
+For textBaseline, the value "middle" is probably appropriate when using this approach. What to use for textAlign depends on the side of the circle we are on. On the left, it should be "right", and on the right, it should be "left" so that the text is positioned away from the pie.
+
+If you are not sure how to find out which side of the circle a given angle is on, look to the explanation of Math.cos in the previous exercise. The cosine of an angle tells us which x-coordinate it corresponds to, which in turn tells us exactly which side of the circle we are on.
