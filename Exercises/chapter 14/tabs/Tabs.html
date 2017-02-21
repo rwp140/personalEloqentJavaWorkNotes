@@ -1,0 +1,64 @@
+Tabs
+
+A tabbed interface is a common design pattern. It allows you to select an interface panel by choosing from a number of tabs “sticking out” above an element.
+
+In this exercise you’ll implement a simple tabbed interface. Write a function, asTabs, that takes a DOM node and creates a tabbed interface showing the child elements of that node. It should insert a list of <button> elements at the top of the node, one for each child element, containing text retrieved from the data-tabname attribute of the child. All but one of the original children should be hidden (given a display style of none), and the currently visible node can be selected by clicking the buttons.
+
+When it works, extend it to also style the currently active button differently.
+
+<div id="wrapper">
+  <div data-tabname="one">Tab one</div>
+  <div data-tabname="two">Tab two</div>
+  <div data-tabname="three">Tab three</div>
+</div>
+<script>
+  var childernNodes = [];
+   
+  function asTabs(node) {
+    // Your code here.
+    var FirstNode = node.childNodes[0];
+    //get children
+    childernNodes = findChildren(node);
+    //create buttons
+    for(let i =0,l = childernNodes.length; i <l; i++){
+      addButton(node,FirstNode,childernNodes[i]);
+    }
+  }
+  function addButton(node, firstchild,relativeChild){
+    var button = document.createElement("button");
+    button.textContent = relativeChild.getAttribute("data-tabname");
+    relativeChild.style.display = 'none';
+    button.style.top = '0px';
+    button.style.left = '10px';
+    button.style.width = 50 +'px';
+    button.style.height = 25 +'px';
+    node.insertBefore(button,firstchild);
+   	button.setAttribute('data-node',relativeChild);
+    button.addEventListener('click',revealTab);
+  }
+  function revealTab(event){
+    //childern
+    var tempNode = event.target
+    //tempNode.style.display = 'block';
+    for(let i = 0, l = childernNodes.length; i<l; i++){
+      if(tempNode.textContent == childernNodes[i].getAttribute("data-tabname")){
+        childernNodes[i].style.display = 'block';
+        console.log('block');
+      } else {
+        childernNodes[i].style.display = 'none';
+      }
+    }
+  }
+ 
+  function findChildren(node){
+    var children_ = []
+    for(let i=0,l=node.childNodes.length;i<l; i++){
+      if(node.childNodes[i].nodeType==document.ELEMENT_NODE){
+    	children_.push(node.childNodes[i]);
+      }
+    }
+    
+    return children_;
+  }
+  asTabs(document.querySelector("#wrapper"));
+</script>
