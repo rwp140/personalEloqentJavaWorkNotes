@@ -1,0 +1,155 @@
+Conway’s Game of Life
+
+Conway’s Game of Life is a simple simulation that creates artificial “life” on a grid, each cell of which is either live or not. Each generation (turn), the following rules are applied:
+
+ Any live cell with fewer than two or more than three live neighbors dies.
+
+ Any live cell with two or three live neighbors lives on to the next generation.
+
+ Any dead cell with exactly three live neighbors becomes a live cell.
+
+A neighbor is defined as any adjacent cell, including diagonally adjacent ones.
+
+Note that these rules are applied to the whole grid at once, not one square at a time. That means the counting of neighbors is based on the situation at the start of the generation, and changes happening to neighbor cells during this generation should not influence the new state of a given cell.
+
+Implement this game using whichever data structure you find appropriate. Use Math.random to populate the grid with a random pattern initially. Display it as a grid of checkbox fields, with a button next to it to advance to the next generation. When the user checks or unchecks the checkboxes, their changes should be included when computing the next generation.
+
+<div id="grid"></div>
+<button id="next">Next generation</button>
+
+<script>
+  // Your code here.
+  var rowLength = 10;
+  var columnHeight = 10;
+  function createNodes(){
+    var grid = document.getElementById("grid");
+    var nodes = [];
+    for(let y=0;y<columnHeight; y++){
+      for(let x = 0; x < rowLength; x++){
+        //create node_ 
+        //with id and name of x","y"Check"
+        let id = x+","+y+"Check";
+        let node = createCheckBox(id,id);
+        grid.appendChild(node);
+        //live random roll
+        var lifeBool = lifeRoll();
+        //set data-Bool to resault
+        node.checked = lifeBool;
+        //pass node_ to array
+        nodes.push(node);
+      }
+      var br = document.createElement("BR");
+      grid.appendChild(br);
+    }
+  }
+  function createCheckBox(_name, _id){
+    var checkBox_ = document.createElement("input");
+    checkBox_.type = 'checkbox';
+    checkBox_.name = _name;
+    checkBox_.id = _id;
+    return checkBox_;
+  }
+  function lifeRoll(){
+    var returnBool_ = false;
+    var max = 10;
+    var min = 1;
+    var rand = Math.random() * (max - min) + min;
+    var chance = 3;
+    if(rand < chance) returnBool_ = true;
+    return returnBool_;
+  }
+  function calculateDeath(x,y){
+    var lifeCount = 0;
+    //Any live cell(checked) with
+    //fewer than two or more than three live neighbors
+    //dies.(false)
+    var checked_ = false;
+    lifeCount = checkNeighbours(x,y);
+    if(lifeCount = 3){
+      checked_ = true;
+    }
+    return checked_;
+  }
+  function calculateSurvivors(x,y){
+    var lifeCount = 0;
+    //Any live cell(checked) with
+    //two or three live neighbors
+    //lives on to the next generation.(true)
+    var checked_ = false;
+    lifeCount = checkNeighbours(x,y);
+    if(lifeCount == 2 || lifeCount == 3){
+      console.log(lifeCount);
+      checked_ = true;
+    }
+    return checked_;
+  }
+  function calculateGrowth(x,y){
+    var lifeCount = 0;
+    //Any dead cell(unchecked) with
+    //exactly three live neighbors
+    //becomes a live cell.(true)
+    var checked_ = false;
+    lifeCount = checkNeighbours(x,y);
+    if(lifeCount == 3) {
+      checked_ = true;
+    }
+    return checked_;
+  }
+  function checkNeighbours(x,y){
+    var lifeCount_ = 0;
+    if(checkNeighbour(x+1,y)) lifeCount_++;
+    if(checkNeighbour(x+1,y+1)) lifeCount_++;
+    if(checkNeighbour(x,y+1)) lifeCount_++;
+    if(checkNeighbour(x-1,y+1)) lifeCount_++;
+    if(checkNeighbour(x-1,y)) lifeCount_++;
+    if(checkNeighbour(x-1,y-1)) lifeCount_++;
+    if(checkNeighbour(x,y-1)) lifeCount_++;
+    if(checkNeighbour(x+1,y-1)) lifeCount_++;
+    return lifeCount_;
+  }
+  function checkNeighbour(x,y){
+    let id = x+","+y+"Check";
+    var cell = document.getElementById(id);
+    var isCheck_ = false;
+    if(cell !=null){
+      isCheck_ = cell.checked;
+    }
+    return isCheck_;
+  }
+  function nextGenoration(){
+    var cellsTobeChecked = []
+    var cellsTobeUnChecked = []
+    for(let y = 0; y<columnHeight; y++){
+      for(let x = 0; x<rowLength; x++){
+        let id = x+","+y+"Check";
+      var cell = document.getElementById(id);
+        let isCheck = cell.checked;
+        //cellsTobeUnChecked.push(cell);
+        if(isCheck){
+          if(calculateDeath(x,y)){
+            cellsTobeUnChecked.push(cell);
+          }
+          if(calculateSurvivors(x,y)){
+            cellsTobeChecked.push(cell);
+          }
+        } else {
+          if(calculateGrowth(x,y)){
+            cellsTobeChecked.push(cell);
+          }
+        }
+      }
+    }
+    checkCell(cellsTobeUnChecked,false);
+    checkCell(cellsTobeChecked,true);
+  }
+  function checkCell(cellArray_,bool_){
+  for(let i = 0, l = cellArray_.length;i<l;i++){
+      cellArray_[i].checked = bool_;
+    }
+  }
+  //calls
+  createNodes();
+  
+  var nextBTN = document.getElementById("next");
+  nextBTN.addEventListener("click",nextGenoration);
+</script>
