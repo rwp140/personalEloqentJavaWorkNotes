@@ -1,0 +1,73 @@
+Autocompletion
+
+Extend a text field so that when the user types, a list of suggested values is shown below the field. You have an array of possible values available and should show those that start with the text that was typed. When a suggestion is clicked, replace the text field’s current value with it.
+
+<input type="text" id="field">
+<div id="suggestions" style="cursor: pointer"></div>
+
+<script>
+  // Builds up an array with global variable names, like
+  // 'alert', 'document', and 'scrollTo'
+  var terms = [];
+  for (var name in window)
+    terms.push(name);
+
+  // Your code here.
+  //on text change
+  var text = document.getElementById("field");
+  
+  function autoSuggest(){
+    //get text content
+    var textValue = text.value;
+    var saveItems = []
+    //for each item in terms by i
+    for(let i =0,l=terms.length; i<l; i++){
+      //split terms at i into term aray
+      let termItems = terms[i].split("");
+      //split textcontent in to array
+      let textItems = textValue.split("");
+        // for items in text content array by j
+      let doCheck = true;
+      let counter = 0;
+      if(textItems.length>=0)
+        for(let j =0, n = textItems.length; j<n&&doCheck; j++){
+          //-tell j meets length
+          //-or
+          //-compare bool is false
+          if(textItems[j]==termItems[j]){
+          //console.log(textItems[j],termItems[j]);
+            counter++;
+          }else{
+            doCheck = false
+          }
+        }
+
+        if(counter>=textItems.length){
+          //save item from terms
+          saveItems.push(terms[i]);
+        }
+      
+    }
+    //after double for loop
+    //display relative terms items in id="suggestions"
+  let sugestions = document.getElementById("suggestions");
+    sugestions.textContent = "";
+    if(saveItems.length<terms.length)
+    for(let i =0, l=saveItems.length; i<l;i++){
+      let div = document.createElement("div");
+      //sugestions.textContent +=+saveItems[i]+"</div>";
+      div.textContent +=" "+saveItems[i];
+      div.setAttribute("data-value", saveItems[i]);
+      div.addEventListener("click",autoCompleate);
+      sugestions.appendChild(div);
+    }
+  }
+  text.addEventListener("input",autoSuggest);
+  function autoCompleate(event){
+    let _value = event.target.getAttribute("data-value");
+    //console.log(_value);
+    text.value=_value;
+  let sugestions = document.getElementById("suggestions");
+    sugestions.textContent = "";
+  }
+</script>
