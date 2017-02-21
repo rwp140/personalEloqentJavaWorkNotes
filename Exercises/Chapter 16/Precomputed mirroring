@@ -1,0 +1,12 @@
+Precomputed mirroring
+
+One unfortunate thing about transformations is that they slow down drawing of bitmaps. For vector graphics, the effect is less serious since only a few points (for example, the center of a circle) need to be transformed, after which drawing can happen as normal. For a bitmap image, the position of each pixel has to be transformed, and though it is possible that browsers will get more clever about this in the future, this currently causes a measurable increase in the time it takes to draw a bitmap.
+
+In a game like ours, where we are drawing only a single transformed sprite, this is a nonissue. But imagine that we need to draw hundreds of characters or thousands of rotating particles from an explosion.
+
+Think of a way to allow us to draw an inverted character without loading additional image files and without having to make transformed drawImage calls every frame.
+
+
+------------------
+
+have inverted sprites with in the sprite sheet, and all relavent sprites on as many as the same sprite sheets as possible. not to many that would case loading the sprit sheet to create issues, but anything that would normally be on the same scene every time in one sheet, things for just that scene on a sprite sheet, and sheets for thigns that pop up more then once. which already is the commen practice, though character sheets are left to them selves often as there are a lot of animations besides just running ;).
